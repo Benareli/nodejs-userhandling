@@ -1,0 +1,43 @@
+<%- include('template/header') -%>
+
+  <div class="row">
+    <div class="col-sm-2">
+      <% if (user.picture) { %>
+        <img class="block py-3" src="<%= user.picture %>" width="100">
+      <% } %>
+    </div>
+    <div class="col-sm-10">
+      <h1 class="text-4xl mb-4">Welcome <%= user.nickname %></h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-3">Username</div>
+    <div class="col-sm-9"><%= dbData[0].username %></div>
+    <!--<div class="col-sm-9"><input type='text' id="usrname"/></div>
+    <script type="text/javascript"> 
+      document.getElementById('usrname').value=<%= userProfile.email %> ; 
+    </script>-->
+  </div>
+  <div class="row">
+    <div class="col-sm-3">Email</div>
+    <div class="col-sm-9"><%= dbData[0].email %></div>
+  </div>
+  <div class="row">
+    <div class="col-sm-3">Fullname</div>
+    <div class="col-sm-9"><%= dbData[0].fullname %></div>
+  </div>
+
+  <a href="/" class="underline"> Back</a><br/><br/>
+
+  <h4><%= dbLog.length %> time(s) Login on:</h4>
+  <table style="padding:0;margin:0;border:1px solid #000;">
+    <tr>
+      <td class="tdList">Date - Time</td>
+    </tr>
+    <% dbLog.forEach((item) => { %>
+    <tr>
+      <td style="border:1px solid #000;"><%= item %></td>
+    </tr>
+    <% }); %>
+  </table>

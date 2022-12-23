@@ -1,0 +1,40 @@
+{
+  "name": "nodejs-userhandling",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Benareli/nodejs-userhandling.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "sequilize",
+    "mysql",
+    "rest",
+    "api"
+  ],
+  "author": "benareli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Benareli/nodejs-userhandling/issues"
+  },
+  "homepage": "https://github.com/Benareli/nodejs-userhandling#readme",
+  "dependencies": {
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-openid-connect": "^2.10.0",
+    "http": "^0.0.1-security",
+    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20",
+    "path": "^0.12.7"
+  }
+}
