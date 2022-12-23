@@ -1,6 +1,10 @@
 var router = require('express').Router();
 const { user } = require("../middleware");
 const { requiresAuth } = require('express-openid-connect');
+const sgMail = require('@sendgrid/mail');
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 var logDate;
 var logUser;
 var logToday = 0;
@@ -42,6 +46,11 @@ async function getLogUser() {
   return res7;
 }
 
+async function verifyUser(email) {
+  const res3 = await user.verifyUser(email);
+  return res3;
+}
+
 router.get('/', function (req, res, next) {
   if(req.oidc.isAuthenticated()){
     getByEmail(req.oidc.user.email).then(result => {
@@ -68,14 +77,18 @@ router.get('/', function (req, res, next) {
 
 router.get('/profile', requiresAuth(), function (req, res, next) {
   getByEmail(req.oidc.user.email).then(result => {
-    getLog(result[0].id).then(reslog => {
-      logDate = [];
-      for (let i = 0; i < reslog.length; i++) {
-        logDate.push(reslog[i].datetime);
-      }
-      res.render('profile', {title: 'Nodejs User Handling', isAuthenticated: req.oidc.isAuthenticated(), 
-        userProfile: req.oidc.user, dbData: result, dbLog: logDate});
-    })
+    if(result[0].verified){
+      getLog(result[0].id).then(reslog => {
+        logDate = [];
+        for (let i = 0; i < reslog.length; i++) {
+          logDate.push(reslog[i].datetime);
+        }
+        res.render('profile', {title: 'Nodejs User Handling', isAuthenticated: req.oidc.isAuthenticated(), 
+          userProfile: req.oidc.user, dbData: result, dbLog: logDate});
+      })
+    }else{
+      res.redirect('/');
+    }
   });
 });
 
@@ -101,6 +114,43 @@ router.get('/dashboard', requiresAuth(), function (req, res, next) {
     });
   });
 });
+
+router.get('/verify', requiresAuth(), function(req, res, next) {
+  getByEmail(req.oidc.user.email).then(result => {
+    if(!result[0].verified){
+      const msg = {
+        to: req.oidc.user.email,
+        from: 'contact@benareli.com', // Use the email address or domain you verified above
+        subject: 'Verify your account on NodeJS User Handling Exam',
+        html: 'Please verify your email to use NodeJS User Handling Feature by clicking ' + 
+          '<a href="http://localhost:3000/ver?email='+req.oidc.user.email+'">this link</a>',
+      };
+      sgMail.send(msg).then(() => {
+        res.redirect('/');
+      }).catch((error) => {console.error(error)})
+    }
+  })
+})
+
+router.get('/ver', requiresAuth(), function(req, res, next) {
+  if(req.query.email){
+    verifyUser(req.query.email).then(result => {
+      if(result=="done"){
+        const msg = {
+          to: req.query.email,
+          from: 'contact@benareli.com', // Use the email address or domain you verified above
+          subject: 'Account Verified on NodeJS User Handling',
+          html: 'Account is verified. You can use full feature on NodeJS User Handling now.',
+        }
+        sgMail.send(msg).then(() => {
+          res.redirect('/');
+        }).catch((error) => {console.error(error)})
+      }
+    })
+  }else{
+    res.redirect('/');
+  }
+})
 
 function countUnique(iterable) {
   return new Set(iterable).size;

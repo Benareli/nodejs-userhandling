@@ -10,6 +10,15 @@ function insertNew(newUser) {
   })
 }
 
+function verifyUser(email) {
+  return new Promise((resolve, reject) => {
+    sql.query("UPDATE userprofile SET verified = true WHERE email = ?", email, (err, res) => {
+      if (err) {reject(err); return;}
+      resolve("done");
+  });
+  })
+}
+
 function checkToken(id, token) {
   return new Promise((resolve, reject) => {
     sql.query(`SELECT * FROM userlog WHERE token = '${token}'`, (err, res) => {
@@ -94,6 +103,7 @@ function getByEmail(email) {
 
 const user = {
   insertNew,
+  verifyUser,
   checkToken,
   getLog,
   getLogDash,

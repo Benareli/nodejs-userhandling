@@ -5,6 +5,7 @@ const router = require('./routes/index');
 const mysql = require('mysql');
 const sql = require("./models/db.js");
 const { auth } = require('express-openid-connect');
+const sgMail = require('@sendgrid/mail');
 
 const app = express();
 const config = {
@@ -15,16 +16,6 @@ const config = {
   issuerBaseURL: 'https://dev-a0b3azkh.us.auth0.com',
   secret: 'UwcPIwmeLUTyhZl4nj_Mm5rE7Kkwn52k7j5vVeq_Kt6csZC9_FxwykewkwVxoRiR'
 };
-/*const con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "babi1234"
-});
-
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected to MySQL!");
-});*/
 
 sql.query(`CREATE TABLE IF NOT EXISTS userprofile (id INT NOT NULL AUTO_INCREMENT, 
   username TEXT, fullname TEXT, email TEXT, origin CHAR, verified BOOLEAN, PRIMARY KEY (id));`, (err, res) => {
@@ -34,6 +25,8 @@ sql.query(`CREATE TABLE IF NOT EXISTS userprofile (id INT NOT NULL AUTO_INCREMEN
 sql.query(`CREATE TABLE IF NOT EXISTS userlog (userid TEXT, datetime TEXT, token TEXT);`, (err, res) => {
   if (err) console.error(err);
 });
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

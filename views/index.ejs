@@ -6,7 +6,7 @@
     <% if (dataRes[0].verified) { %>
         <p>You are logged in as <%= dataRes[0].email %>. <a href="/profile" class="underline">View your profile</a>.</p>
     <% } else { %>
-        <p>Your account <%= dataRes[0].email %> is not verified! <a href="/profile" class="underline">Verified now!</a>.</p>
+        <p>Your account <%= dataRes[0].email %> is not verified! <a href="/verify" class="underline">Verified now!</a>.</p>
     <% } %>
 <% } else { %>
     <p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
